@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+  client: &client
+    hostname: client
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      REDIS_URL: "redis://redis"
+      NODE_ENV: "development"
+    volumes:
+      - ./client:/home/node/app:cached
+      - client_node_modules:/home/node/app/node_modules:rw
+    entrypoint: yarn dev
+
+  server: &server
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      REDIS_URL: "redis://redis"
+      NODE_ENV: "development"
+
+  session:
+    ports:
+      - "6379:6379"
+
+  db:
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=studymoa
+      - MYSQL_ROOT_HOST=%

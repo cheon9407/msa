@@ -1,0 +1,100 @@
+version: "3.3"
+services:
+  node: &node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tmpfs:
+      - /tmp
+  
+  app: &app
+    <<: *node
+    networks:
+      - app_service
+    # links:
+    #   - redis
+    # links 옵션 대신 networks 쓰기
+
+  client: &client
+    <<: *app
+    hostname: client
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./client:/home/node/app:cached
+      - client_node_modules:/home/node/app/node_modules:rw
+    entrypoint: yarn dev
+
+  server: &server
+    <<: *app
+    hostname: server
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./server:/home/node/app:cached
+      - server_node_modules:/home/node/app/node_modules:rw
+    networks:
+      - backend
+    depends_on:
+      - db
+      - session
+    entrypoint: yarn dev
+      
+  session:
+    # hostname을 정의한다. 따로 작성하지 않으면 service 이름과 같은 이름을 사용한다.
+    hostname: redis
+    networks:
+        - backend
+    ports:
+        - "6379:6379"
+    image: redis:6.0
+  # sample_app:
+  #   # image: node:lts # 12.16
+  #   build:
+  #       context: ./app
+  #       dockerfile: Dockerfile
+  #   networks:
+  #       - redis
+  #       - backend
+  #   # links:
+  #   #   - redis
+  #   # links 옵션 대신 networks 쓰기
+  #   volumes:
+  #       - ./app:/var/www/app
+  #   ports:
+  #       - "9000:9000"
+  #   environment:
+  #       PORT: "9000"
+  #       REDIS_URL: "redis://redis"
+  
+  ### shell
+  fshell:
+    <<: *client
+    entrypoint: uname
+
+  bshell:
+    <<: *server
+    entrypoint: uname
+
+  db:
+    image: mysql:8.0.17
+    command: --lower_case_table_names=1 --default-authentication-plugin=mysql_native_password
+    networks:
+      - backend
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=studymoa
+      - MYSQL_ROOT_HOST=%
+  
+volumes:
+  mysql:
+  client_node_modules:
+  server_node_modules:
+
+networks:
+  app_service:
+  backend:

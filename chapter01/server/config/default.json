@@ -1,0 +1,22 @@
+{
+    "db": {
+      "username": "root",
+      "password": "root",
+      "database": "studymoa",
+      "host": "192.168.31.169",
+      "dialect": "mysql"
+    },
+    "cookies" : {
+        "path": "/",
+        "httpOnly": true,
+        "maxAge": 3600000,
+        "overwrite": false,
+        "signed": true
+    },
+    "redis" : {
+        "host": "192.168.31.169",
+        "port": 6379
+    },
+    "secret" : ["secret key", "foo", "bar"]
+}
+  

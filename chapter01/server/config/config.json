@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "studymoa",
+    "host": "192.168.31.169",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "root",
+    "database": "studymoa",
+    "host": "192.168.31.169",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "root",
+    "database": "studymoa",
+    "host": "192.168.31.169",
+    "dialect": "mysql"
+  }
+}

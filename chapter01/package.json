@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "dev" : "cross-env NODE_ENV=production node ./app/index.js"
+  },
+  "dependencies": {
+    "ioredis": "^4.17.1",
+    "koa-generic-session": "^2.0.4",
+    "koa-redis": "^4.0.1"
+  }
+}
