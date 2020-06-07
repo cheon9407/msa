@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 
@@ -28,10 +27,16 @@ export default {
   methods: {
     async doLogin () {
       const { id, password } = this
-      const res = await axios.post(`http://192.168.31.169:8080/api/auth/login`, {
-        id, password 
-      })
-      console.log(res)
+      try {
+        const res = await this.$axios.post(`${process.env.VUE_APP_API}/auth/login`, {
+        // const res = await axios.post(`http://192.168.31.57:8080/api/auth/login`, {
+          id, password 
+        })
+        console.log(res)
+        this.$router.push("/main")
+      } catch(err) {
+        alert(err)
+      }
     }
   }
 }
