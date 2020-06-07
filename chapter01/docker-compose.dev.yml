@@ -8,8 +8,8 @@ services:
       - "3000:3000"
     environment:
       PORT: "3000"
-      REDIS_URL: "redis://redis"
       NODE_ENV: "development"
+      VUE_APP_API: "http://192.168.31.57:8080/api"
     volumes:
       - ./client:/home/node/app:cached
       - client_node_modules:/home/node/app/node_modules:rw
@@ -20,8 +20,8 @@ services:
       - "8080:8080"
     environment:
       PORT: "8080"
-      REDIS_URL: "redis://redis"
       NODE_ENV: "development"
+      CLIENT: ""
       
   session:
     ports:
@@ -40,5 +40,5 @@ services:
       - '3306:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=studymoa
+      - MYSQL_DATABASE=msa
       - MYSQL_ROOT_HOST=%

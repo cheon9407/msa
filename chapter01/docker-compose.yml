@@ -48,25 +48,7 @@ services:
     ports:
         - "6379:6379"
     image: redis:6.0
-  # sample_app:
-  #   # image: node:lts # 12.16
-  #   build:
-  #       context: ./app
-  #       dockerfile: Dockerfile
-  #   networks:
-  #       - redis
-  #       - backend
-  #   # links:
-  #   #   - redis
-  #   # links 옵션 대신 networks 쓰기
-  #   volumes:
-  #       - ./app:/var/www/app
-  #   ports:
-  #       - "9000:9000"
-  #   environment:
-  #       PORT: "9000"
-  #       REDIS_URL: "redis://redis"
-  
+    
   ### shell
   fshell:
     <<: *client
