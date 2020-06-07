@@ -11,7 +11,6 @@ const config = require('config');
 const cookie = config.get('cookies')
 const secret = config.get('secret')
 const store = require('./redis')
-
 const api = require('./src/api');
 const middleware = require('./src/middleware');
 
@@ -20,6 +19,9 @@ const router = new Router();
 
 // Set signed cookie keys.
 app.keys = new KeyGrip(secret, 'sha256');
+
+const dotenv = require('dotenv')
+dotenv.config()
 
 app.use(session({
   store,
@@ -47,10 +49,21 @@ app.use(session({
 //     }
 // });
 
-app.use(cors());
+// app.use(cors({
+//   origin: "http://192.168.31.57:3000",
+//   origin: "*",
+//   credentials: true
+// }));
 app.use(bodyParser({ multipart: true })) 
-app.use(middleware);
-
+if(process.env.NODE_ENV === "production" && process.env.CLIENT) {
+  app.use(cors({ 
+    origin: process.env.CLIENT,
+    credentials : true 
+  }));
+} else {
+  app.use(cors({ credentials : true }));
+}
+router.use(middleware)
 router.use('/api', api.routes());
 
 app

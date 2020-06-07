@@ -11,7 +11,7 @@
         "httpOnly": true,
         "maxAge": 3600000,
         "overwrite": false,
-        "signed": true
+        "signed": false
     },
     "redis" : {
         "host": "192.168.31.169",

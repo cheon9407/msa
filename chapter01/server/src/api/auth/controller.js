@@ -12,20 +12,27 @@ const LoginHandler = async function(ctx, next){
         
         if(!user) {
             console.error('not user')
-            ctx.body = 'POST ' + ctx.request.path + JSON.stringify(ctx.request.body);
+            ctx.status = 400;
+            ctx.body = { status : 'fail' };
             return;
         }
 
         const newSession = await ctx.regenerateSession();
         const { sessionId } = ctx
-        // console.log('new sessionId ==', ctx.sessionId)
+        console.log('new sessionId ==', ctx.sessionId)
         const newToken = await generateToken({ id, sessionId })
-        ctx.cookies.set('access_token', newToken, cookie);
-        // console.log(ctx.cookies)
+        ctx.cookies.set('access_token', newToken);
+        // ctx.cookies.set('access_token', newToken, cookie);
+        console.log(cookie)
+        console.log(newToken)
     } catch (err) {
         console.error('jwt error', err)
+        ctx.status = 400;
+        ctx.body = { status : 'fail' };
+        return;
     }
-    ctx.body = 'POST ' + ctx.request.path + JSON.stringify(ctx.request.body);
+    ctx.body = { status : 'ok' };
+    console.log(ctx.cookies.get('access_token'))
 }
 
 module.exports = {
