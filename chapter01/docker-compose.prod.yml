@@ -9,10 +9,11 @@ services:
     environment:
       PORT: "3000"
       NODE_ENV: "production"
+      VUE_APP_API: "http://proxy:80/api"
     volumes:
       - ./client:/home/node/app:cached
       - client_node_modules:/home/node/app/node_modules:rw
-    entrypoint: yarn dev
+    entrypoint: sh -c "yarn global add @vue/cli && yarn install && yarn start"
 
   server: &server
     ports:
@@ -20,11 +21,25 @@ services:
     environment:
       PORT: "8080"
       NODE_ENV: "production"
-      CLIENT: "http://192.168.31.57:3000"
+      CLIENT: "http://client:3000"
+    entrypoint: sh -c "yarn install && yarn start"
+    networks:
+      - proxy
 
   session:
     ports:
       - "6379:6379"
+
+  proxy:
+    image: nginx
+    volumes: 
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - proxy
 
   db:
     ports:
@@ -33,3 +48,6 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=studymoa
       - MYSQL_ROOT_HOST=%
+
+networks:
+  proxy:

@@ -2,8 +2,8 @@ version: "3.3"
 services:
   client: &client
     hostname: client
-    stdin_open: true
-    tty: true
+    networks:
+      - frontend
     ports:
       - "3000:3000"
     environment:
@@ -13,27 +13,22 @@ services:
     volumes:
       - ./client:/home/node/app:cached
       - client_node_modules:/home/node/app/node_modules:rw
-    entrypoint: yarn dev
+    entrypoint: /bin/bash
 
   server: &server
+    networks:
+      - frontend
     ports:
       - "8080:8080"
     environment:
       PORT: "8080"
       NODE_ENV: "development"
-      CLIENT: ""
+      CLIENT: "http://client:3000"
+    entrypoint: /bin/bash
       
   session:
     ports:
       - "6379:6379"
-
-  ### shell
-  fshell:
-    <<: *client
-    entrypoint: /bin/bash
-  bshell:
-    <<: *server
-    entrypoint: /bin/bash
 
   db:
     ports:

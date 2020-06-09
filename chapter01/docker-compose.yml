@@ -1,6 +1,7 @@
 version: "3.3"
 services:
   node: &node
+    # 이미지 빌드 하는 법
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,17 +10,18 @@ services:
   
   app: &app
     <<: *node
-    networks:
-      - app_service
     # links:
     #   - redis
-    # links 옵션 대신 networks 쓰기
+    # links 옵션 deprecated
+    # 대신 networks 쓰기 
 
   client: &client
     <<: *app
     hostname: client
     stdin_open: true
     tty: true
+    networks:
+      - frontend
     volumes:
       - ./client:/home/node/app:cached
       - client_node_modules:/home/node/app/node_modules:rw
@@ -49,15 +51,6 @@ services:
         - "6379:6379"
     image: redis:6.0
     
-  ### shell
-  fshell:
-    <<: *client
-    entrypoint: uname
-
-  bshell:
-    <<: *server
-    entrypoint: uname
-
   db:
     image: mysql:8.0.17
     command: --lower_case_table_names=1 --default-authentication-plugin=mysql_native_password
@@ -69,7 +62,7 @@ services:
       - '3306:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=studymoa
+      - MYSQL_DATABASE=msa
       - MYSQL_ROOT_HOST=%
   
 volumes:
@@ -78,5 +71,5 @@ volumes:
   server_node_modules:
 
 networks:
-  app_service:
+  frontend:
   backend:
