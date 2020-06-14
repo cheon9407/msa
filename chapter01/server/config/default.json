@@ -2,8 +2,8 @@
     "db": {
       "username": "root",
       "password": "root",
-      "database": "studymoa",
-      "host": "192.168.31.169",
+      "database": "msa",
+      "host": "db",
       "dialect": "mysql"
     },
     "cookies" : {
@@ -14,7 +14,7 @@
         "signed": false
     },
     "redis" : {
-        "host": "192.168.31.169",
+        "host": "session",
         "port": 6379
     },
     "secret" : ["secret key", "foo", "bar"]

@@ -1,0 +1,52 @@
+version: "3.3"
+services:
+  node: &node
+    # 이미지 빌드 하는 법
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tmpfs:
+      - /tmp
+  
+  app: &app
+    <<: *node
+  
+  client: &client
+    hostname: client
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      NODE_ENV: "development"
+      VUE_APP_API: "http://localhost/api"
+    entrypoint: sh -c "yarn install && yarn dev"
+
+  server: &server
+    <<: *app
+    hostname: server
+    environment:
+      PORT: "8080"
+      NODE_ENV: "production"
+      CLIENT: "http://localhost:3000"
+    volumes:
+      - ./server:/home/node/app:cached
+      - server_node_modules:/home/node/app/node_modules:rw
+    entrypoint: sh -c "yarn install && yarn start"
+    networks:
+      - proxy
+
+  proxy:
+    image: nginx
+    volumes: 
+      - ./nginx.lb.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - proxy
+
+networks:
+  proxy:

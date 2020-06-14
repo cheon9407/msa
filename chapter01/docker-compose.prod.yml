@@ -10,14 +10,9 @@ services:
       PORT: "3000"
       NODE_ENV: "production"
       VUE_APP_API: "http://proxy:80/api"
-    volumes:
-      - ./client:/home/node/app:cached
-      - client_node_modules:/home/node/app/node_modules:rw
     entrypoint: sh -c "yarn global add @vue/cli && yarn install && yarn start"
 
   server: &server
-    ports:
-      - "8080:8080"
     environment:
       PORT: "8080"
       NODE_ENV: "production"
